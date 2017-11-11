@@ -5,7 +5,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
     pwHash = db.Column(db.String(120))
-    #games = db.relationship('Games', backref='' maybe connect with character, which has a game id column instead of games
+    #games = db.relationship('Games', backref='' #maybe connect with character, which has a game id column instead of games
     gamesPlayed = db.Column(db.Integer)
     score = db.Column(db.Integer)
 
@@ -34,14 +34,14 @@ class Game(db.Model):
 
 class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    gameID = db.Column(db.Integer, ForeignKey('Game.id'))
-    userID = db.Column(db.Integer, ForeignKey('User.id'))
+    gameID = db.Column(db.Integer, db.ForeignKey('Game.id'))
+    userID = db.Column(db.Integer, db.ForeignKey('User.id'))
     character = db.Column(db.String(20))
     hand = db.Column(db.String(50))
     position = db.Column(db.String(12))
     pter = db.Column(db.String(20))
     room = db.Column(db.String(20))
-    notecard = db.Column(db.Integer, ForeignKey('notecard.id'))
+    notecard = db.Column(db.Integer, db.ForeignKey('notecard.id'))
 
     def __init__(self, gameID, userID, character):
         self.gameID = gameID
@@ -51,7 +51,7 @@ class Character(db.Model):
     
 class Solution(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    gameID = db.Column(db.Integer, ForeignKey('Game.id'))
+    gameID = db.Column(db.Integer, db.ForeignKey('Game.id'))
     suspect = db.Column(db.Integer)
     weapon = db.Column(db.Integer)
     room = db.Column(db.Integer)
@@ -63,7 +63,7 @@ class Solution(db.Model):
         
 class Turn(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    gameID = db.Column(db.Integer, ForeignKey('Game.id'))
+    gameID = db.Column(db.Integer, db.ForeignKey('Game.id'))
     turnNumber = db.Column(db.Integer)
     character = db.Column(db.String(20))
     dieRoll = db.Column(db.Integer)

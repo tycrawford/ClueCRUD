@@ -38,13 +38,33 @@ def login():
 
 @app.route("/mygames")
 def mygames():
+    pass
+
     #TODO enter code that queries the databse for a list of all games belonging to the player attributed to teh signed in user. 
     #TODO find a way to format them into a jiinja template
     #TODO return in the form of a table, show basic information, player username unordered list, game status, current player turn, etc. 
-    
+    #TODO if game is awaiting players, and the only player is the user that started the game, and that user is signed in, allow a delete option
+    #TODO limit the page to 25 games, add a paramter on the URL to accommodate for more results
 
 @app.route("/gamenumber")
 def gamenumber():
+
+    pass
     #TODO enter code that pulls all relevant data on the game passed in the URL
     #TODO format it into blocks to send to a jinja template
 
+
+@app.route("/gameslist")
+def gameslist():
+    pass
+    #TODO mimic myGames
+    #TODO remove user restraint
+
+@app.route("/rules")
+def rules():
+    pass
+    #TODO basic webpage that describes the rules of play and how the website works
+
+
+if __name__ == "__main__":
+    app.run()
