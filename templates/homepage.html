@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Home Page</h2>
+Welcome to Boddy Mansion Murders
+
+<a href="/newgame"> Start a New Game</a>
+
+<br>
+
+Your Games
+{{listofgames | safe}}
+
+{% endblock %}

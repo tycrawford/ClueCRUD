@@ -6,42 +6,75 @@ class User(db.Model):
     username = db.Column(db.String(20), unique=True)
     pwHash = db.Column(db.String(120))
     #games = db.relationship('Games', backref='' #maybe connect with character, which has a game id column instead of games
-    gamesPlayed = db.Column(db.Integer)
-    score = db.Column(db.Integer)
+    gamesPlayed = db.Column(db.Integer, default=0)
+    score = db.Column(db.Integer, default=1000)
 
     def __init__(self, username, password):
         self.username = username
         self.pwHash = makePwHash(password)
 
+
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    scarlet = db.Column(db.Integer)
+    scarlet = db.Column(db.Integer, default=0)
+    mustard = db.Column(db.Integer, default=0)
+    white = db.Column(db.Integer, default=0)
+    green = db.Column(db.Integer, default=0)
+    peacock = db.Column(db.Integer, default=0)
+    plum = db.Column(db.Integer, default=0)
+    board = db.Column(db.Integer, default=0)
+    solution = db.Column(db.Integer, default=0)
+    currentPlayerTurn = db.Column(db.Integer, default=0)
+    activePlayerList = db.Column(db.String(30), default="")
+    currentTurnNumber = db.Column(db.Integer, default=0)
+    log = db.Column(db.Integer, default=0)
+    cards = db.Column(db.Integer, default=0)
+    numPlayers = db.Column(db.Integer, default=0)
 
-    def __init__(self, playerID, playerChar):
+    def __init__(self, playerID, playerChar, numPlayers):
         if playerChar == "Scarlet":
-            self.Scarlet = playerID
+            self.scarlet = playerID
         elif playerChar == "White":
-            self.White = playerID
+            self.white = playerID
         elif playerChar == "Mustard":
-            self.Mustard = playerID
+            self.mustard = playerID
         elif playerChar == "Green":
-            self.Green = playerID
+            self.green = playerID
         elif playerChar == "Peacock":
-            self.Peacock = playerID
+            self.peacock = playerID
         elif playerChar == "Plum":
-            self.Plum = playerID
+            self.plum = playerID
+        self.numPlayers = numPlayers
+        
 
+    def addChar(self,playerID, playerChar, gameID, db):
+        characterName = ""
+        if playerChar == "Scarlet":
+            CharacterName = "Miss Scarlet"
+        elif playerChar == "White":
+            CharacterName = "Mrs. White"
+        elif playerChar == "Mustard":
+            CharacterName = "Col. Mustard"
+        elif playerChar == "Green":
+            CharacterName = "Mr. Green"
+        elif playerChar == "Peacock":
+            CharacterName = "Mrs. Peacock"
+        elif playerChar == "Plum":
+            CharacterName = "Professor Plum"
+        newCharacter = Character(gameID, playerID, CharacterName)
+        db.session.add(newCharacter)
+        db.session.commit()
 
 class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    gameID = db.Column(db.Integer, db.ForeignKey('Game.id'))
-    userID = db.Column(db.Integer, db.ForeignKey('User.id'))
-    character = db.Column(db.String(20))
-    hand = db.Column(db.String(50))
-    position = db.Column(db.String(12))
-    pter = db.Column(db.String(20))
-    room = db.Column(db.String(20))
-    notecard = db.Column(db.Integer, db.ForeignKey('notecard.id'))
+    gameID = db.Column(db.Integer, default=0)
+    userID = db.Column(db.Integer, default=0)
+    character = db.Column(db.String(20), default="")
+    hand = db.Column(db.String(50), default="")
+    position = db.Column(db.String(12), default="")
+    pter = db.Column(db.Integer, default=0)
+    room = db.Column(db.Integer, default=0)
+    notecard = db.Column(db.Integer, default=0)
 
     def __init__(self, gameID, userID, character):
         self.gameID = gameID
@@ -51,7 +84,7 @@ class Character(db.Model):
     
 class Solution(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    gameID = db.Column(db.Integer, db.ForeignKey('Game.id'))
+    gameID = db.Column(db.Integer)
     suspect = db.Column(db.Integer)
     weapon = db.Column(db.Integer)
     room = db.Column(db.Integer)
@@ -63,14 +96,14 @@ class Solution(db.Model):
         
 class Turn(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    gameID = db.Column(db.Integer, db.ForeignKey('Game.id'))
+    gameID = db.Column(db.Integer)
     turnNumber = db.Column(db.Integer)
-    character = db.Column(db.String(20))
+    character = db.Column(db.Integer)
     dieRoll = db.Column(db.Integer)
     diceRolled = db.Column(db.Boolean)
     moveMade = db.Column(db.Boolean)
-    pter = db.Column(db.String(20))
-    room = db.Column(db.String(20))
+    pter = db.Column(db.Integer)
+    room = db.Column(db.Integer)
     suggestionMade = db.Column(db.Boolean)
     turnOver = db.Column(db.Boolean)
     suggestion = db.Column(db.String(15))
@@ -108,7 +141,7 @@ class Log(db.Model):
     gameID = db.Column(db.Integer)
     publicString = db.Column(db.String(200))
     privateString = db.Column(db.String(200))
-    privUser = db.Column(db.String(20))
+    privUser = db.Column(db.Integer)
     timeStamp = db.Column(db.String(30))
     
     def __init__(self, gameID, publicString, privateString, privUser, timeStamp):

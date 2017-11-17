@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>New Game</h2>
+Users must log in before posting
+<form action="/newgame" method='post'>
+    <table>
+        <tr>
+            <td>
+                <label> Select a Character </label>
+
+            </td>
+            <td>
+                <select name="char">
+                    <option>
+                        Scarlet
+                    </option>
+                    <option>
+                        Mustard
+                    </option>
+                    <option>
+                        White
+                    </option>
+                    <option>
+                        Green
+                    </option>
+                    <option>
+                        Peacock
+                    </option>
+                    <option>
+                        Plum
+                    </option>
+                </select>
+                
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>
+                    Number of Players
+
+                </label>
+            </td>
+            <td>
+                <select name="numPlayers">
+                    <option>
+                        3
+                    </option>
+                    <option>
+                        4
+                    </option>
+                    <option>
+                        5
+                    </option>
+                    <option>
+                        6
+                    </option>
+                </select>
+
+            </td>
+        </tr>
+    </table>
+    <input type="submit" name="submit">
+</form>
+{% endblock %}
