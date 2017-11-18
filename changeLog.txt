@@ -7,6 +7,15 @@
 -Built templates to accommodate new features, signin, new game, homepage, etc. 
 
 
+11/17/2017
+-Append Active Player List with starting user
+-Sort homepage game list into game status
+-Started building single game page
+-Started building join function
+-Games the player is not in currently allow options to join on character
+-Also prevents players from joining on games in progress
+-Fixed addChar function within the Game class to append active player list and add userID to appropriate character field
+-addChar can now recognize functions inputting all lowercase last name, Capitalized last name, and Mr. Lastname character names
 
 Future changes:
 -Make homepage only accessible to users signed in

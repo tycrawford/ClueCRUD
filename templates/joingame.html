@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>
+Joining Game {{gameID}} </h1>
+Select a character
+<form action='/joingame' method='POST'>
+    {{gameID | safe}}
+    <select name="char">
+    {{optionsList | safe}}
+    </select>
+    <input type="submit" value="Join game">
+</form>
+
+{% endblock %}

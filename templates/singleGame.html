@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>GAME NUMBER {{gameID}}</h1><br>
+Status: {{status}} {{turnNumber}}<br>
+
+<h2> PLAYERS </h2>
+Miss Scarlet: {{scarlet | safe}} <br>
+Col. Mustard: {{mustard | safe}}<br>
+Mrs. White: {{white | safe}}<br>
+Mr. Green: {{green | safe}}<br>
+Mrs. Peacock: {{peacock | safe}}<br>
+Professor Plum: {{plum | safe}}<br>
+
+
+{% endblock %}

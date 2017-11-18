@@ -30,6 +30,7 @@ class Game(db.Model):
     log = db.Column(db.Integer, default=0)
     cards = db.Column(db.Integer, default=0)
     numPlayers = db.Column(db.Integer, default=0)
+    status = db.Column(db.Integer, default=0)
 
     def __init__(self, playerID, playerChar, numPlayers):
         if playerChar == "Scarlet":
@@ -45,23 +46,34 @@ class Game(db.Model):
         elif playerChar == "Plum":
             self.plum = playerID
         self.numPlayers = numPlayers
+        self.activePlayerList = str(playerID) + ", "
         
 
-    def addChar(self,playerID, playerChar, gameID, db):
+    def addChar(self,playerID, playerChar, gameID): #NOte to self, just deleted the db parameter because I think its redundant, it is in the global scope as defined above
         characterName = ""
-        if playerChar == "Scarlet":
-            CharacterName = "Miss Scarlet"
-        elif playerChar == "White":
-            CharacterName = "Mrs. White"
-        elif playerChar == "Mustard":
-            CharacterName = "Col. Mustard"
-        elif playerChar == "Green":
-            CharacterName = "Mr. Green"
-        elif playerChar == "Peacock":
-            CharacterName = "Mrs. Peacock"
-        elif playerChar == "Plum":
-            CharacterName = "Professor Plum"
-        newCharacter = Character(gameID, playerID, CharacterName)
+        if playerChar == "Scarlet" or playerChar == "scarlet" or playerChar == "Miss Scarlet":
+            self.scarlet = playerID
+            characterName = "Miss Scarlet"
+        elif playerChar == "White" or playerChar == "white" or playerChar == "Mrs. White":
+            self.white = playerID
+            characterName = "Mrs. White"
+        elif playerChar == "Mustard" or playerChar == "mustard" or playerChar == "Col. Mustard":
+            self.mustard = playerID
+            characterName = "Col. Mustard"
+        elif playerChar == "Green" or playerChar == "green" or playerChar == "Mr. Green":
+            self.green = playerID
+            characterName = "Mr. Green"
+        elif playerChar == "Peacock" or playerChar == "peacock" or playerChar == "Mrs. Peacock":
+            self.peacock = playerID
+            characterName = "Mrs. Peacock"
+        elif playerChar == "Plum" or playerChar == "plum" or playerChar == "Professor Plum":
+            self.plum = playerID
+            characterName = "Professor Plum"
+        print
+        newCharacter = Character(gameID, playerID, characterName)
+        currentPlayers = self.activePlayerList
+        currentPlayers = currentPlayers + str(playerID) + ", "
+        self.activePlayerList = currentPlayers
         db.session.add(newCharacter)
         db.session.commit()
 
