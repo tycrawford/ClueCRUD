@@ -1,0 +1,16 @@
+11/16/2017
+-Built the MAMP database
+-Successfully started a "game" through HTML
+-Successfully added a first "character" automatically to a new game
+-Successfully tied games to a logged in player
+-Successfully displayed games to a logged in player
+-Built templates to accommodate new features, signin, new game, homepage, etc. 
+
+
+
+Future changes:
+-Make homepage only accessible to users signed in
+-If the user is signed in, change any links to the login feature to be a log out link
+-Dont allow signed in user to manually enter the login page
+-Also add login form to any page in the side banner
+-Maybe consider letting the /login page only be a POST method, and allow redirects based on input, forcing no one to be able to enter it manually
