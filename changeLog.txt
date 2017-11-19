@@ -17,6 +17,12 @@
 -Fixed addChar function within the Game class to append active player list and add userID to appropriate character field
 -addChar can now recognize functions inputting all lowercase last name, Capitalized last name, and Mr. Lastname character names
 
+11/18/2017
+-Build the start game method within the Game class
+-Start Game simply changes status
+-TODO Consider moving the checking and if statements surrounding game start to a method rather than in the line-by-line consider
+-In Join Game, when a player joins, if statements are run to test whether the joining player is the last player, if so, run startGame
+
 Future changes:
 -Make homepage only accessible to users signed in
 -If the user is signed in, change any links to the login feature to be a log out link

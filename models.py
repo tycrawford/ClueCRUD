@@ -46,7 +46,7 @@ class Game(db.Model):
         elif playerChar == "Plum":
             self.plum = playerID
         self.numPlayers = numPlayers
-        self.activePlayerList = str(playerID) + ", "
+        
         
 
     def addChar(self,playerID, playerChar, gameID): #NOte to self, just deleted the db parameter because I think its redundant, it is in the global scope as defined above
@@ -72,11 +72,15 @@ class Game(db.Model):
         print
         newCharacter = Character(gameID, playerID, characterName)
         currentPlayers = self.activePlayerList
-        currentPlayers = currentPlayers + str(playerID) + ", "
+        currentPlayers = currentPlayers + str(playerID) + ","
         self.activePlayerList = currentPlayers
         db.session.add(newCharacter)
         db.session.commit()
 
+    def startGame(self):
+        self.status = 1
+        db.session.commit()
+        
 class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     gameID = db.Column(db.Integer, default=0)

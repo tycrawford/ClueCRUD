@@ -104,12 +104,16 @@ def game():
 		status = "Game completed"
 	playerInGame = False
 	activePlayerList = gameinfo.activePlayerList
-	listofplayers = activePlayerList.split(', ')
-	print(listofplayers)
+	listofplayers = activePlayerList.split(',')
 	for player in listofplayers:
 		if player == str(userID):
 			playerInGame = True
-		print(playerInGame)
+		
+
+	#TODO Replace all this code with two for loops.
+	#The first for loop goes through a list of attributes, gameinfo.attribute, and checks if == 0
+	#Based on if, append list of jinja passthroughs accordingly
+
 	if gameinfo.scarlet == 0 and playerInGame == False and gameInfoStatus == 0:
 		scarlet = "<a href='/joingame?id={0}&char=scarlet'> Join This Game </a>".format(gameID)
 	elif gameinfo.scarlet == 0 and playerInGame == True:
@@ -188,9 +192,9 @@ def newgame():
 		#TODO create a board
 		game = Game.query.order_by(Game.id.desc()).first()
 		gameID = game.id
-		newGame.addChar(currentUserID, char,gameID,db)
+		newGame.addChar(currentUserID, char,gameID)
 		
-		return redirect("homepage.html")
+		return redirect("/")
 	else:
 		return render_template("newgame.html")
 
@@ -204,8 +208,13 @@ def joingame():
 		char = request.form['char']
 		gameID = request.form['hiddengameID']
 		thisGame = Game.query.filter_by(id=gameID).first()
-
 		thisGame.addChar(userID, char, gameID)
+		activePlayerList = thisGame.activePlayerList
+		listofplayers = activePlayerList.split(',')
+		if len(listofplayers) == (thisGame.numPlayers + 1):
+			thisGame.startGame()
+			print("game started")
+			
 		return redirect('/game?gameid={0}'.format(gameID))
 	else:
 		gameID = "<input type='hidden' name='hiddengameID' value='{0}'>".format(request.args.get('id'))
@@ -229,6 +238,12 @@ def joingame():
 			return render_template('joingame.html', gameID=gameID, optionsList=optionsList)
 		elif char in ['scarlet', 'mustard', 'green', 'white', 'peacock', 'plum']:
 			gameinfo.addChar(userID, char, gameinfo.id)
+			activePlayerList = gameinfo.activePlayerList
+			listofplayers = activePlayerList.split(',')
+			if len(listofplayers) == (gameinfo.numPlayers + 1):
+				gameinfo.startGame()
+				print("game started")
+				
 			return redirect('/game?gameid={0}'.format(gameinfo.id))
 		else:
 			return redirect('/game?gameid={0}'.format(gameinfo.id))
