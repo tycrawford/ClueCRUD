@@ -13,8 +13,15 @@ userLoggedInHeader = """
 Signed in as {0} LOGOUT
 """ #TODO enter a proper href for the logout
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'usersignup', 'gamelist']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
 @app.route("/")
 def homepage():
+	
 	username = session['username']
 	currentUser = User.query.filter_by(username=username).first()
 	userID = currentUser.id
@@ -22,20 +29,11 @@ def homepage():
 	yourGames = Character.query.filter_by(userID=userID).all()
 	idList = [character.gameID for character in Character.query.filter_by(userID=userID)]
 	characterList = [character.character for character in Character.query.filter_by(userID=userID)]
-	print("*********************Printing userID from currentUser.id********************************")
-	print(userID)
-	print(type(userID))
 	statusList = []#[game.status for game in Game.query.filter(or_(Game.scarlet==userID, Game.mustard==userID, Game.white==userID, Game.green==userID, Game.peacock=userID, Game.plum=userID))]
 	#TODO build a list of statuses based on game information. iterate through each game using each id
 	for gameID in range(len(idList)):
 		currentGameStatus = db.session.query(Game.status).filter_by(id=idList[gameID]).first()
 		statusList.append(currentGameStatus)
-
-	
-	print("*******************Printing status, ID, character list*************************")
-	print(statusList)
-	print(idList)
-	print(characterList)
 	#TODO Build three separate tables, consisting of games awaiting players, games in progress, and games completed
 	tableHeader = "<table>"
 	tableFooter = "</table>"
@@ -160,21 +158,24 @@ def game():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')            #Allows for just the basic login screen
-    else:
-        username = request.form['username']             #Gathers posted usernamne
-        password = request.form['password']             #Gathers posted password
-        users = User.query.filter_by(username=username) #compares username against usernames in database
-        if users.count() == 1:                          #If there is a match (should only be one, usernames are unique)
-            user = users.first()                        #Pull the first (and only) resulting object
-            if checkPwHash(password, user.pwHash):      #If the password entered hashes properly and produces the hashed database password
-                session['username'] = user.username         #sets the sessions user to the username of the user object
-                return redirect("/")                    #brings us back to the homepage
-            else:
-                return render_template("login.html", passwordError="Bad Password") #returns the appropriate bad password error
-        else:
-            return render_template("login.html", usernameError="Bad Username") #returns bad username error
+	if request.method == 'GET':
+		if 'username' in session:
+			return """Currently logged in as {0}!""".format(session['username'])
+		else:
+			return render_template('login.html')		#Allows for just the basic login screen
+	else:
+		username = request.form['username']             #Gathers posted usernamne
+		password = request.form['password']             #Gathers posted password
+		users = User.query.filter_by(username=username) #compares username against usernames in database
+	if users.count() == 1:                          #If there is a match (should only be one, usernames are unique)
+		user = users.first()                        #Pull the first (and only) resulting object
+		if checkPwHash(password, user.pwHash):      #If the password entered hashes properly and produces the hashed database password
+			session['username'] = user.username         #sets the sessions user to the username of the user object
+			return redirect("/")                    #brings us back to the homepage
+		else:
+			return render_template("login.html", passwordError="Bad Password") #returns the appropriate bad password error
+	else:
+		return render_template("login.html", usernameError="Bad Username") #returns bad username error
 
 @app.route("/newgame", methods=['GET', 'POST'])
 def newgame():
@@ -279,7 +280,7 @@ def usersignup():
 			db.session.add(newUser)
 			db.session.commit()
 			session['username'] = username
-			return render_template("login.html")
+			return redirect("/")
 		else:
 			return render_template("usersignup.html", usernameError=usernameError, passwordError=passwordError)
 	else:
@@ -296,15 +297,37 @@ def mygames():
     #TODO if game is awaiting players, and the only player is the user that started the game, and that user is signed in, allow a delete option
     #TODO limit the page to 25 games, add a paramter on the URL to accommodate for more results
 
-@app.route("/gamenumber")
-def gamenumber():
+@app.route("/gamelist")
+def gamelist():
+	gameList = [game.id for game in Game.query.all()]
+	gametable = """<table>
+	<tr>
+		<td>
+			Game Number
+		</td>
+	</tr>
+	"""
 
-    pass
-    #TODO enter code that pulls all relevant data on the game passed in the URL
-    #TODO format it into blocks to send to a jinja template
+	for i in range(len(gameList)):
+		newRow = """
+		<tr>
+			<td>
+				<a href="/game?gameid={0}"> {0} </a>
+			</td>
+		</tr>
+		""".format(gameList[i])
+		gametable = gametable + newRow
+
+	gametable = gametable + "</table>"	
 
 
-@app.route("/gameslist")
+	return render_template('gamelist.html', gamelist=gametable)
+
+
+@app.route("/logout")
+def logout():
+    del session['username']
+    return redirect('/login')
 def gameslist():
     pass
     #TODO mimic myGames

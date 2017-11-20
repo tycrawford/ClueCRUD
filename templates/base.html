@@ -7,6 +7,15 @@
     </head>
     {{loginHeader | safe}} <br>
     <body>
+        <a href='/'> Home Page</a><br>
+        <a href='/gamelist'> List of Games </a><br>
+        {% if session['username'] %}
+            Logged in as {{ session['username'] }}  <br>
+            <a href='/logout'>Log Out</a><br>
+        {% else %}
+            <a href='/login'> Log In</a> <br>
+            <a href='/signup'> Create Account </a><br>
+        {% endif %}
 
         {% block content %}
         {% endblock %}

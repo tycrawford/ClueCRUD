@@ -1,6 +1,6 @@
 from app import db
 from hashutils import makePwHash
-
+import random
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
@@ -31,6 +31,8 @@ class Game(db.Model):
     cards = db.Column(db.Integer, default=0)
     numPlayers = db.Column(db.Integer, default=0)
     status = db.Column(db.Integer, default=0)
+    charList = db.Column(db.String(300), default="")
+    gameCards = ['Misss. Scarlet', 'Mrs. White', 'Col. Mustard', 'Mr. Green', 'Mrs. Peacock', 'Professor Plum', 'Candlestick', 'Knife', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench', 'Ballroom', 'Billiard Room', 'Conservatory', 'Diningroom', 'Hall', 'Kitchen', 'Library', 'Lounge', 'Study']
 
     def __init__(self, playerID, playerChar, numPlayers):
         if playerChar == "Scarlet":
@@ -80,7 +82,70 @@ class Game(db.Model):
     def startGame(self):
         self.status = 1
         db.session.commit()
+        suspects = list(range(0, 6))
+        weapons = list(range(6, 12))
+        rooms = list(range(12, 21))
+        suspect = random.randrange(0, 6)
+        weapon = random.randrange(6, 12)
+        room = random.randrange(12, 21)
+        solution = Solution(self.id, suspect, weapon, room)
+        db.session.add(solution)
+        db.session.commit()
+        suspects.remove(suspect)
+        weapons.remove(weapon)
+        rooms.remove(room)
+        remainingCards = []
+        for suspect in suspects:
+            remainingCards.append(suspect)
+        for weapon in weapons:
+            remainingCards.append(weapon)
+        for room in rooms:
+            remainingCards.append(room)
+        handOne = []
+        handTwo = []
+        handThree = []
+        listOfHands = [handOne, handTwo, handThree]
+        if self.numPlayers > 3:
+            handFour = []
+            listOfHands.append(handFour)
+        if self.numPlayers > 4:
+            handFive = []
+            listOfHands.append(handFive)
+        if self.numPlayers > 5:
+            handSix = []
+            listOfHands.append(handSix)
+        playerDealt = 0
+        idList = [Character.id for character in Character.query.filter_by(gameID=self.id)]
+        charListStr = ""
+        for char in idList:
+            charListStr = charListStr + str(char) + ','
+
+        self.charList = charListStr
+
+        for card in remainingCards:
+            dealingCard = random.randrange(len(remainingCards))
+            listOfHands[playerDealt].append(dealingCard)
+            remainingCards.remove(dealingCard)
+            playerDealt = playerDealt + 1 % self.numPlayers
         
+        handDealt = 0
+
+        for id in idList:
+            currentChar = Character.query.filter_by(id=id).first()
+            currentHand = listOfHands[handDealt]
+            handString = ""
+            for card in currentHand:
+                handString = handString + str(card) + ","
+            currentChar.hand = handString
+            
+
+
+        # for card in range(len(remainingCards)):
+
+        #     pulledCard = random.randrange(len(remainingCards))
+        #     remainingCards.
+
+
 class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     gameID = db.Column(db.Integer, default=0)
@@ -105,7 +170,8 @@ class Solution(db.Model):
     weapon = db.Column(db.Integer)
     room = db.Column(db.Integer)
 
-    def __init__(self, suspect, weapon, room):
+    def __init__(self, gameID, suspect, weapon, room):
+        self.gameID = gameID
         self.suspect = suspect
         self.weapon = weapon
         self.room = room

@@ -23,6 +23,19 @@
 -TODO Consider moving the checking and if statements surrounding game start to a method rather than in the line-by-line consider
 -In Join Game, when a player joins, if statements are run to test whether the joining player is the last player, if so, run startGame
 
+11/19/2017
+-Added the Logout and Logged in as username spot to the base templates
+-Added the Login and Create User to the templates
+-Built a list of games file, accessible by anyone, for joining
+-Demo'd three users joining a game and changing its status
+-Added hidden gameCards variable in game class, a list of the name of the cards, to be indexed suspects, weapons, then rooms
+-Started doing more to start game
+-Worked a solution deal into the startGame function
+-Changed solution instantiation to include gameID
+-gameStart currently deals a number of hands equal to the number of players
+
+
+
 Future changes:
 -Make homepage only accessible to users signed in
 -If the user is signed in, change any links to the login feature to be a log out link
