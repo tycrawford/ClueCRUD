@@ -121,22 +121,23 @@ class Game(db.Model):
             charListStr = charListStr + str(char) + ','
 
         self.charList = charListStr
-
-        for card in remainingCards:
-            dealingCard = random.randrange(len(remainingCards))
-            listOfHands[playerDealt].append(dealingCard)
-            remainingCards.remove(dealingCard)
-            playerDealt = playerDealt + 1 % self.numPlayers
+        #TODO Check above line for functionality
+        #TODO Fix below for Loops to get hands dealt to character objects
+        # for card in remainingCards:
+        #     dealingCard = random.randrange(len(remainingCards))
+        #     listOfHands[playerDealt].append(dealingCard)
+        #     remainingCards.remove(dealingCard)
+        #     playerDealt = playerDealt + 1 % self.numPlayers
         
-        handDealt = 0
+        # handDealt = 0
 
-        for id in idList:
-            currentChar = Character.query.filter_by(id=id).first()
-            currentHand = listOfHands[handDealt]
-            handString = ""
-            for card in currentHand:
-                handString = handString + str(card) + ","
-            currentChar.hand = handString
+        # for id in idList:
+        #     currentChar = Character.query.filter_by(id=id).first()
+        #     currentHand = listOfHands[handDealt]
+        #     handString = ""
+        #     for card in currentHand:
+        #         handString = handString + str(card) + ","
+        #     currentChar.hand = handString
             
 
 
